@@ -46,37 +46,43 @@ def p(text,end="\n"):
  else:
   print(text,end=end)
 
+def translate(char, amount):
+    global indentation
 
-def translate(char,amount):
- global indentation
- indent=" "*indentation
- if char == "+":
-  p(f"{indent}mem[pointer]+={amount}")
- if char == "-":
-  p(f"{indent}mem[pointer]-={amount}")
- if char == "[":
-  if amount > 1:
-   translate("[",amount-1)
-  p(f"{indent}while not mem[pointer]==0:")
-  indentation += 1
- if char == ".":
-  if amount == 1:
-   p(f"{indent}p(chr(mem[pointer]))")
-  else:
-   p(f"{indent}p(chr(mem[pointer])*{amount})")
- if char == ",":
-  if amount > 1:
-   translate(",",amount-1)
-  p(f"{indent}mem[pointer]=ord(key())") #ord('a')
- if char == "]":
-  if amount > 1:
-   translate("]",amount-1)
-  indentation -= 1
- if char == ">":
-  p(f"{indent}pointer+={amount}")
- if char == "<":
-  p(f"{indent}pointer-={amount}")
+    if char is None:
+        return
 
+    if char == "+":
+        p(" "*indentation + f"mem[pointer]+={amount}")
+
+    elif char == "-":
+        p(" "*indentation + f"mem[pointer]-={amount}")
+
+    elif char == ">":
+        p(" "*indentation + f"pointer+={amount}")
+
+    elif char == "<":
+        p(" "*indentation + f"pointer-={amount}")
+
+    elif char == "[":
+        for _ in range(amount):
+            p(" "*indentation + "while not mem[pointer]==0:")
+            indentation += 1
+
+    elif char == "]":
+        indentation -= amount
+        if indentation < 0:
+            raise SyntaxError("Too many ]")
+
+    elif char == ",":
+        for _ in range(amount):
+            p(" "*indentation + "mem[pointer]=ord(key())")
+
+    elif char == ".":
+        if amount == 1:
+            p(" "*indentation + "p(chr(mem[pointer]))")
+        else:
+            p(" "*indentation + f"p(chr(mem[pointer])*{amount})")
 
 p("""
 import os

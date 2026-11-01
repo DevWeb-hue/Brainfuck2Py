@@ -90,6 +90,16 @@ def translate(char, amount):
 
     elif char == ")":
         indentation -= amount
+    elif char == "$":
+       p(" "*indentation + f"temp=mem[pointer]")
+    elif char == "#":
+       p(" "*indentation + f"mem[pointer]=temp")
+    elif char == "|":
+       p(" "*indentation + f"if mem[pointer] < 0: mem[pointer] = 0")
+    elif char == "_":
+       p(" "*indentation + f"mem[pointer] = -mem[pointer]")
+    elif char == "@":
+       p(" "*indentation + f"pointer += mem[pointer]")
 p("""
 import os
 import sys
@@ -99,7 +109,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--file')
 parser.add_argument('--output')
 args = parser.parse_args()
-
+temp = 0
 def key():
  # Windows platform
  if os.name == 'nt':

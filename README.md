@@ -1,3 +1,12 @@
 # Brainfuck2Py
 A Brainfuck to python converter that takes in the normal brainfuck of +-[]., and outputs a python file that can optionally use --file and --output to read a file, instead of user input, and output to a file instead of terminal.
 plus () which is a run once if zero, cause this interpreter does NOT use 0-255 ints, it uses full on python ints, meaning yes you can go negative, and no [-] doesn't always become 0, for positives, yes, but negatives no...
+
+
+SO i added a few opcodes to make things easier
+| clamps things to positive values
+_ inverts the sign
+$ stores the value in a temp thing off the tape
+\# hashtag loads the value back in
+and @ lets you go to pointer += value in mem[pointer]
+hope tha helps

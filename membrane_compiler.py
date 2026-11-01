@@ -25,8 +25,7 @@ file=args.file
 output=args.output
 
 if file:
- for c in open(file,encoding="UTF-8").read():
-  code+=c
+ code=open(file,encoding="UTF-8").read()
 else:
  c=key()
  while c!="\n":
@@ -56,89 +55,59 @@ while True:
  e=code.find(";",n+1)
  if e==-1:break
 
- name=code[s+6:n]
- body=code[n+1:e]
+ name=code[s+6:n].strip()
+ body=code[n+1:e].strip()
 
  macros[name]=body
 
- code=code[:s]+code[e+1:]
+ code=code[:s]+" "+code[e+1:]
  i=s
 
-def expand_counts(src):
- out=""
- i=0
+tokens=code.split()
 
- while i<len(src):
-  c=src[i]
+def expand_counts(tok):
+ if len(tok)<2:return tok
 
-  if c in "+-<>":
-   j=i+1
-   n=""
+ if tok[0] in "+-<>":
+  n=tok[1:]
+  if n.isdigit():
+   return tok[0]*int(n)
 
-   while j<len(src) and src[j].isdigit():
-    n+=src[j]
-    j+=1
-
-   if n:
-    out+=c*int(n)
-    i=j
-    continue
-
-  out+=c
-  i+=1
-
- return out
-
-def expand_repeats(src):
- out=""
- i=0
-
- while i<len(src):
-
-  if src[i].isalpha() or src[i]=='_':
-   j=i
-
-   while j<len(src) and (src[j].isalnum() or src[j]=='_'):
-    j+=1
-
-   token=src[i:j]
-
-   if j<len(src) and src[j]=='*':
-    j+=1
-    n=""
-
-    while j<len(src) and src[j].isdigit():
-     n+=src[j]
-     j+=1
-
-    if n:
-     out+=token*int(n)
-     i=j
-     continue
-
-   out+=token
-   i=j
-   continue
-
-  out+=src[i]
-  i+=1
-
- return out
+ return tok
 
 changed=True
 while changed:
- old=code
+ changed=False
+ new=[]
 
- code=expand_repeats(code)
+ for tok in tokens:
 
- for name,body in macros.items():
-  code=code.replace(name,body)
+  if "*" in tok:
+   left,right=tok.rsplit("*",1)
 
- code=expand_counts(code)
+   if right.isdigit():
+    for _ in range(int(right)):
+     new.append(left)
+    changed=True
+    continue
 
- changed=(code!=old)
+  if tok in macros:
+   new.extend(macros[tok].split())
+   changed=True
+   continue
 
-p(code,"")
+  tok2=expand_counts(tok)
+
+  if tok2!=tok:
+   changed=True
+
+  new.append(tok2)
+
+ tokens=new
+
+result="".join(tokens)
+
+p(result,"")
 
 if output:
- open(output,"w",encoding="UTF-8").write(CODE)
+ open(output,"w",encoding="UTF-8").write(result)

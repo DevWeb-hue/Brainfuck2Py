@@ -1,7 +1,8 @@
 # membrane transpiler
 # python membrane_compiler.py --file membrane.mb --output program.bf
 # python bcs.py --file program.bf --output program.py
-import argparse;import os;import sys;import re
+
+import argparse;import os;import sys
 
 def key():
  if os.name=='nt':
@@ -88,9 +89,47 @@ def expand_counts(src):
 
  return out
 
+def expand_repeats(src):
+ out=""
+ i=0
+
+ while i<len(src):
+
+  if src[i].isalpha() or src[i]=='_':
+   j=i
+
+   while j<len(src) and (src[j].isalnum() or src[j]=='_'):
+    j+=1
+
+   token=src[i:j]
+
+   if j<len(src) and src[j]=='*':
+    j+=1
+    n=""
+
+    while j<len(src) and src[j].isdigit():
+     n+=src[j]
+     j+=1
+
+    if n:
+     out+=token*int(n)
+     i=j
+     continue
+
+   out+=token
+   i=j
+   continue
+
+  out+=src[i]
+  i+=1
+
+ return out
+
 changed=True
 while changed:
  old=code
+
+ code=expand_repeats(code)
 
  for name,body in macros.items():
   code=code.replace(name,body)

@@ -1,4 +1,4 @@
-# a brainfuck compiler capible of being written in brainfuck. For smaller less human readable one, use b2p (same thing just smaller)
+# a brainfuck compiler capible of being written in brainfuck.
 import argparse;import os;import sys
 def key():
  if os.name=='nt':
@@ -139,7 +139,7 @@ def p(text):
  if output:
   CODE += text
  else:
-  print(text,end='')
+  print(text,end='',flush=True)
 """)
 
 p("mem = [0 for _ in range(1024)]")

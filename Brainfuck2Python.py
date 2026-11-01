@@ -83,7 +83,13 @@ def translate(char, amount):
             p(" "*indentation + "p(chr(mem[pointer]))")
         else:
             p(" "*indentation + f"p(chr(mem[pointer])*{amount})")
+    elif char == "(":
+        for _ in range(amount):
+            p(" "*indentation + "if mem[pointer]==0:")
+            indentation += 1
 
+    elif char == ")":
+        indentation -= amount
 p("""
 import os
 import sys

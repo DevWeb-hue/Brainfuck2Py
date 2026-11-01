@@ -135,21 +135,31 @@ def key():
    # Always reset terminal settings back to normal
    termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
   return char
-code: str = ""
+code = []
 file = args.file
 output = args.output
 file_index = 0
+
 def modKey():
  global file_index
  global code
+
+ if file_index >= len(code):
+  return chr(10)
+
+ x = code[file_index]
  file_index += 1
- return code[file_index-1]
- 
+
+ return chr(x)
 
 if file:
- for line in open(file,encoding="UTF-8").read():
-   line: str
-   code += line
+ data = open(file,encoding="UTF-8").read()
+
+ code = [len(data)]
+
+ for letter in data:
+  code.append(ord(letter))
+
  key = modKey
 
 if output:

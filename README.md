@@ -504,3 +504,6 @@ Major goals include:
 - Sentinel-based memory structures
 
 ---
+
+
+Happy frickn coding!

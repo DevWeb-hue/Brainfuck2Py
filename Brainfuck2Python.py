@@ -1,4 +1,5 @@
-# a brainfuck compiler capible of being written in brainfuck.
+# a zanebrain compiler capible of being written in zanebrain.
+# use via python bcs.py --file program.zb --output program.py
 import argparse;import os;import sys
 def key():
  if os.name=='nt':
@@ -90,16 +91,24 @@ def translate(char, amount):
 
     elif char == ")":
         indentation -= amount
+        if indentation < 0:
+            raise SyntaxError("Too many )")
     elif char == "$":
-       p(" "*indentation + f"temp=mem[pointer]")
+       p(" "*indentation + f"stack.append(mem[pointer])")
     elif char == "#":
-       p(" "*indentation + f"mem[pointer]=temp")
+       p(" "*indentation + f"mem[pointer]=stack.pop()")
     elif char == "|":
        p(" "*indentation + f"if mem[pointer] < 0: mem[pointer] = 0")
     elif char == "_":
        p(" "*indentation + f"mem[pointer] = -mem[pointer]")
     elif char == "@":
        p(" "*indentation + f"pointer += mem[pointer]")
+    elif char == "/":
+       p(" "*indentation + f"mem[pointer] = 0")
+    elif char == "O":
+       p(" "*indentation + f"pointer = 0")
+    elif char == "*":
+       p(" "*indentation + f"mem[pointer] = len(stack)")
 p("""
 import os
 import sys
@@ -109,7 +118,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--file')
 parser.add_argument('--output')
 args = parser.parse_args()
-temp = 0
+
 def key():
  # Windows platform
  if os.name == 'nt':
@@ -176,6 +185,7 @@ def p(text):
 
 p("mem = [0 for _ in range(1024)]")
 p("pointer = 0")
+p("stack = []")
 indentation:int = 0
 amount = 1
 last = None

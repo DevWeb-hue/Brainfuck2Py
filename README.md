@@ -2,6 +2,41 @@
 
 A Brainfuck-to-Python compiler designed to eventually be simple enough to be rewritten in Zanebrain itself.
 
+One side effect of Zanebrain's design is that it works well as a sandboxed programming language.
+
+Zanebrain programs compile into a very small subset of Python and cannot directly create classes, execute arbitrary Python code, import modules, access the filesystem, or interact with the operating system.
+
+Programs operate primarily on:
+
+- Integers
+- Arrays
+- A stack
+- Input streams
+- Output streams
+
+File access is intentionally restricted.
+
+Input is only available through the `--file` argument, which exposes a single file (through ints) to the program.
+
+Output is only available through the `--output` argument, which writes to a single destination (rather than to terminal). ONLY when the 'program' halts, never through any zanebrain compiled code (writting to file is once at the very end of generated python).
+
+This means a Zanebrain program cannot decide what files to open, what files to create, or what locations to access. Those choices are made outside the language by whoever runs the program.
+
+If you are particularly paranoid about security, you can inspect or compile the raw Zanebrain source itself. The language is intentionally small enough that understanding every possible operation is practical.
+
+### Security Notes
+
+Zanebrain restricts what programs can do, but it does not automatically prevent:
+
+- Infinite loops
+- Excessive memory usage
+- Excessive output
+- Extremely long runtimes
+
+Programs should still be executed with sensible limits when used in untrusted environments.
+BUT if program taking too long, you can close it, it won't corrupt any files! Meaning all that any hackers or malicious programmers have,
+are infinite loops, and an uncapped stack that can only be appended ints, one at a time. So if the program takes too long, just close it!
+
 Compile Zanebrain source:
 (I have Brainfuck2Python.py as bcs.py on my computer B.C.S aka be cau se)
 ```bash

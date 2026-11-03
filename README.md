@@ -37,6 +37,25 @@ Programs should still be executed with sensible limits when used in untrusted en
 BUT if program taking too long, you can close it, it won't corrupt any files! Meaning all that any hackers or malicious programmers have,
 are infinite loops, and an uncapped stack that can only be appended ints, one at a time. So if the program takes too long, just close it!
 
+### Custom Compilers
+
+Zanebrain intentionally has very strict limitations.
+
+If you wish to avoid these restrictions, Zanebrain may not be the language you are looking for.
+
+However, the compiler itself is written in Python and is designed to be easy to understand and modify. If you want additional features such as networking, graphics, audio, filesystem access, larger memory models, or other capabilities, simply copy the compiler, add your own opcodes, and have fun.
+
+Keep in mind that many of Zanebrain's safety properties come from what the compiler refuses to generate. Every new opcode increases the amount of trust required in the compiler implementation and may introduce new security risks.
+
+For this reason, custom Zanebrain compilers should be treated as separate languages with separate security guarantees.
+
+In short:
+
+- Trust the compiler, not just the source code.
+- More opcodes = more power.
+- More power = more opportunities for bugs and vulnerabilities.
+- If security matters, inspect both the Zanebrain source and the compiler being used.
+
 Compile Zanebrain source:
 (I have Brainfuck2Python.py as bcs.py on my computer B.C.S aka be cau se)
 ```bash
